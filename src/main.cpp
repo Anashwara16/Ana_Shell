@@ -1,36 +1,23 @@
 #include <iostream>
-#include <string>
+#include <cstdlib>
+#include "repl.h"
+#include "logger.h"
 
-void run_shell() {
-    std::string line;
-
-    while (true) {
-        std::cout << "cppsh> ";
-        std::getline(std::cin, line);
-        if (line.empty()) continue;
-        if (line == "exit") break;
-
-        std::istringstream iss(line);
-        std::vector<std::string> tokens;
-        std::string token;
-        while (iss >> token) tokens.push_back(token);
-
-        std::vector<char*> args;
-        for (auto& s : tokens) args.push_back(&s[0]);
-        args.push_back(nullptr);
-
-        pid_t pid = fork();
-        if (pid == 0) {
-            execvp(args[0], args.data());
-            perror("exec failed");
-            exit(1);
-        } else {
-            wait(nullptr);
-        }
+int main(int argc, char* argv[]) {
+    // Initialize logging
+    Logger::initialize();
+    
+    Logger::info("Starting anashell v0.1.0");
+    
+    try {
+        // Create and run REPL
+        REPL repl;
+        int exit_code = repl.run();
+        
+        Logger::info("Exiting anashell with code: {}", exit_code);
+        return exit_code;
+    } catch (const std::exception& e) {
+        Logger::error("Fatal error: {}", e.what());
+        return EXIT_FAILURE;
     }
-}
-
-int main() {
-    run_shell();
-    return 0;
 }
