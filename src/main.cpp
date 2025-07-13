@@ -1,36 +1,48 @@
+#include "shell.hpp"
 #include <iostream>
 #include <string>
+#include <vector>
 
-void run_shell() {
-    std::string line;
-
+/**
+ * Main REPL (Read-Eval-Print Loop) for the minishell
+ */
+int main() {
+    std::string input;
+    
+    std::cout << "Welcome to MiniShell!\n";
+    std::cout << "Type 'exit' to quit.\n\n";
+    
     while (true) {
-        std::cout << "cppsh> ";
-        std::getline(std::cin, line);
-        if (line.empty()) continue;
-        if (line == "exit") break;
-
-        std::istringstream iss(line);
-        std::vector<std::string> tokens;
-        std::string token;
-        while (iss >> token) tokens.push_back(token);
-
-        std::vector<char*> args;
-        for (auto& s : tokens) args.push_back(&s[0]);
-        args.push_back(nullptr);
-
-        pid_t pid = fork();
-        if (pid == 0) {
-            execvp(args[0], args.data());
-            perror("exec failed");
-            exit(1);
-        } else {
-            wait(nullptr);
+        // Display prompt
+        std::cout << "minishell> ";
+        
+        // Read user input
+        if (!std::getline(std::cin, input)) {
+            // Handle Ctrl+D (EOF)
+            std::cout << "\nGoodbye!\n";
+            break;
+        }
+        
+        // Skip empty lines or whitespace-only input
+        if (input.empty() || input.find_first_not_of(" \t\n\r") == std::string::npos) {
+            continue;
+        }
+        
+        // Parse command into tokens
+        std::vector<std::string> args = parse_command(input);
+        
+        if (args.empty()) {
+            continue;
+        }
+        
+        // Execute command
+        int result = execute_command(args);
+        
+        // If execute_command returns -1, it means exit was called
+        if (result == -1) {
+            break;
         }
     }
-}
-
-int main() {
-    run_shell();
+    
     return 0;
 }
