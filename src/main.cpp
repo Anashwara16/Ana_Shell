@@ -4,17 +4,17 @@
 #include <vector>
 
 /**
- * Main REPL (Read-Eval-Print Loop) for the minishell
+ * Main REPL (Read-Eval-Print Loop) for the anashell
  */
 int main() {
     std::string input;
     
-    std::cout << "Welcome to MiniShell!\n";
+    std::cout << "Welcome to anashell!\n";
     std::cout << "Type 'exit' to quit.\n\n";
     
     while (true) {
         // Display prompt
-        std::cout << "minishell> ";
+        std::cout << "anashell> ";
         
         // Read user input
         if (!std::getline(std::cin, input)) {

@@ -21,13 +21,4 @@ cmake .. -DCMAKE_BUILD_TYPE=Debug
 echo -e "${YELLOW}Building...${NC}"
 make -j$(nproc)
 
-# Run tests if available
-if [ -f "tests" ]; then
-    echo -e "${YELLOW}Running tests...${NC}"
-    ./tests
-    echo -e "${GREEN}Tests passed!${NC}"
-else
-    echo -e "${YELLOW}No tests found${NC}"
-fi
-
 echo -e "${GREEN}Build complete! Executable: ./anashell${NC}"

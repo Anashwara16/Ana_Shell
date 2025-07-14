@@ -5,7 +5,6 @@
 #include <string>
 #include <unistd.h>
 #include <sys/wait.h>
-#include <cstdlib>
 
 /**
  * Parse input string into command and arguments
